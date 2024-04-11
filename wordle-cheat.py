@@ -153,6 +153,21 @@ def create_letter_entry_exc(parent, label_text):
     frame.pack(pady=4)
     return entries
 
+def clear_entries():
+    """Function to clear the contents of the entry widgets."""
+    for entry in certain_entries:
+        entry.delete(0, tk.END)
+    for entry in include_entries:
+        entry.delete(0, tk.END)
+    for entry in include_entries2:
+        entry.delete(0, tk.END)
+    for entry in include_entries3:
+        entry.delete(0, tk.END)
+    for entry in exclude_entries:
+        entry.delete(0, tk.END)
+    for text in text_displays:
+        text.config(state=tk.NORMAL)  # Temporarily enable widget to modify it
+        text.delete('1.0', tk.END)
 
 words = []
 current_list = []
@@ -184,9 +199,10 @@ include_entries3 = create_letter_entry_inc(input_frame)
 exclude_entries = create_letter_entry_exc(input_frame, "Letters to Exclude")
 
 large_font = tkfont.Font(family="Helvetica", size=14, weight="bold")
+small_font = tkfont.Font(family="Helvetica", size=10, weight="bold")
 
 load_button = tk.Button(input_frame, text="Load Words File", command=load_file, font=large_font, width=20, height=2, relief="flat", foreground="white", background="#4d6160")
-load_button.pack(pady=10)
+load_button.pack(pady=2)
 
 # Create frames for include and exclude entries
 frame_include = tk.Frame(root)
@@ -195,7 +211,10 @@ frame_exclude = tk.Frame(root)
 frame_exclude.pack(pady=5)
 
 filter_button = tk.Button(input_frame, text="Apply Filters", command=update_list, font=large_font, width=20, height=2, relief="flat", foreground="white", background="#4d6160")
-filter_button.pack(pady=10)
+filter_button.pack(pady=2)
+
+clear_button = tk.Button(input_frame, text="Clear", command=clear_entries, font=small_font, width=10, height=2, relief="flat", foreground="white", background="#4d6160")
+clear_button.pack(pady=5)
 
 # Assuming 'root' is your Tk window instance
 text_displays = []  # List to store the text widgets
