@@ -24,4 +24,4 @@ After clicking Apply Filters, on the right side of the panel you'll see 10 most 
 
 ## Clear
 
-Deleted all your inputs, for a fresh new game.
+Deletes all your inputs, for a fresh new game.
