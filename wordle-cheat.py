@@ -1,6 +1,11 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox, font as tkfont
+from tkinter import filedialog, font as tkfont
 from collections import Counter
+
+background_color = "#4d6160"
+foreground_color = "white"
+green_letter_color = "#10ac84"
+yellow_letter_color = "#e1b12c"
 
 def find_most_popular_letters(words):
     all_letters = [letter for word in words for letter in set(word)]
@@ -23,18 +28,48 @@ def load_words(file_path):
 
 def get_letters_from_entries(entries):
     """Collect non-empty letters from entry widgets."""
-    return [entry.get().strip().lower() for entry in entries if entry.get().strip() and entry.cget("bg") == "#4d6160"]
+    return [entry.get().strip().lower() for entry in entries if entry.get().strip() and entry.cget("bg") == background_color]
 
-def on_entry_change(var, indx, mode):
-    """Limit the entry widget to only one character."""
+def on_entry_change(var, entries, index):
+    """Limit the entry widget to only one character and handle focus change."""
     current_value = var.get()
+    # Ensure only the first character is kept, discarding any additional input
     if len(current_value) > 1:
-        var.set(current_value[:1])
+        if current_value[0] == " ":
+            var.set(current_value[1])
+        else:
+            var.set(current_value[0])
+    # Check if the textbox was previously empty before the current input was registered
+    # This prevents refocusing when editing the existing character
+    if len(current_value) == 1:
+        if index < (len(entries) - 1):  # Make sure this is not the last textbox
+            entries[index + 1].config(state=tk.NORMAL)
+            entries[index + 1].focus()
     update_list()
 
+def on_backspace(entries, index):
+    """Handle the backspace key event to shift focus to the previous entry if current is empty."""
+    if index > 0:  # Check if current entry is empty
+        entries[index - 1].focus()  # Focus the previous entry
+        entries[index - 1].config(state=tk.NORMAL)
+    update_list()
+
+def on_left_arrow(entries, index):
+    """Handle the left arrow key event to shift focus to the previous entry."""
+    if index > 0:
+        entries[index - 1].focus()
+
+def on_right_arrow(entries, index):
+    """Handle the right arrow key event to shift focus to the next entry."""
+    if index < len(entries) - 1:
+        entries[index + 1].focus()
 
 def update_list():
     global current_list
+    yellow = ["","","","",""]
+    green = ["","","","",""]
+    filtered_words = []
+    true_excluded = []
 
     included_letters1 = [entry.get().strip().lower() for entry in include_entries1]
     included_letters2 = [entry.get().strip().lower() for entry in include_entries2]
@@ -50,68 +85,34 @@ def update_list():
     excluded_letters5 = set(get_letters_from_entries(include_entries5))
     excluded_letters6 = set(get_letters_from_entries(include_entries6))
 
+    # Get all Green and Yellow letters
+    for (include_entries, included_letters) in zip((include_entries1, include_entries2, include_entries3, include_entries4, include_entries5, include_entries6), (included_letters1, included_letters2, included_letters3, included_letters4, included_letters5, included_letters6)):
+        for index, letter in enumerate(included_letters):
+            if include_entries[index].cget("bg") == green_letter_color:
+                green[index] = letter
+            if include_entries[index].cget("bg") == yellow_letter_color:
+                yellow[index] = letter
+
     # Filter words based on excluded letters
-    filtered_words = [word for word in words if not any(letter in word for letter in excluded_letters1)]
-    filtered_words = [word for word in filtered_words if not any(letter in word for letter in excluded_letters2)]
-    filtered_words = [word for word in filtered_words if not any(letter in word for letter in excluded_letters3)]
-    filtered_words = [word for word in filtered_words if not any(letter in word for letter in excluded_letters4)]
-    filtered_words = [word for word in filtered_words if not any(letter in word for letter in excluded_letters5)]
-    filtered_words = [word for word in filtered_words if not any(letter in word for letter in excluded_letters6)]
+    for excluded_letters in (excluded_letters1, excluded_letters2, excluded_letters3, excluded_letters4, excluded_letters5, excluded_letters6):
+        for letter in excluded_letters:
+            if letter not in green and letter not in yellow:
+                true_excluded.append(letter)
+    filtered_words = [word for word in words if not any(letter in word for letter in true_excluded)]
 
     # Filter words based on included letters (specific positions)
-    for index, letter in enumerate(included_letters1):
-        if include_entries1[index].cget("bg") == "#e1b12c":
-            if letter:  # If a certain letter is specified and is yellow
-                filtered_words = [word for word in filtered_words if letter in word]
-                filtered_words = [word for word in filtered_words if not word[index] == letter]
-        if include_entries1[index].cget("bg") == "#10ac84":
-            if letter:
-                filtered_words = [word for word in filtered_words if word[index] == letter]
-
-    for index, letter in enumerate(included_letters2):
-        if include_entries2[index].cget("bg") == "#e1b12c":
-            if letter:  # If a certain letter is specified and is yellow
-                filtered_words = [word for word in filtered_words if letter in word]
-                filtered_words = [word for word in filtered_words if not word[index] == letter]
-        if include_entries2[index].cget("bg") == "#10ac84":
-            if letter:
-                filtered_words = [word for word in filtered_words if word[index] == letter]
-
-    for index, letter in enumerate(included_letters3):
-        if include_entries3[index].cget("bg") == "#e1b12c":
-            if letter:  # If a certain letter is specified and is yellow
-                filtered_words = [word for word in filtered_words if letter in word]
-                filtered_words = [word for word in filtered_words if not word[index] == letter]
-        if include_entries3[index].cget("bg") == "#10ac84":
-            if letter:
-                filtered_words = [word for word in filtered_words if word[index] == letter]
-
-    for index, letter in enumerate(included_letters4):
-        if include_entries4[index].cget("bg") == "#e1b12c":
-            if letter:  # If a certain letter is specified and is yellow
-                filtered_words = [word for word in filtered_words if letter in word]
-                filtered_words = [word for word in filtered_words if not word[index] == letter]
-        if include_entries4[index].cget("bg") == "#10ac84":
-            if letter:
-                filtered_words = [word for word in filtered_words if word[index] == letter]
-
-    for index, letter in enumerate(included_letters5):
-        if include_entries5[index].cget("bg") == "#e1b12c":
-            if letter:  # If a certain letter is specified and is yellow
-                filtered_words = [word for word in filtered_words if letter in word]
-                filtered_words = [word for word in filtered_words if not word[index] == letter]
-        if include_entries5[index].cget("bg") == "#10ac84":
-            if letter:
-                filtered_words = [word for word in filtered_words if word[index] == letter]
-
-    for index, letter in enumerate(included_letters6):
-        if include_entries6[index].cget("bg") == "#e1b12c":
-            if letter:  # If a certain letter is specified and is yellow
-                filtered_words = [word for word in filtered_words if letter in word]
-                filtered_words = [word for word in filtered_words if not word[index] == letter]
-        if include_entries6[index].cget("bg") == "#10ac84":
-            if letter:
-                filtered_words = [word for word in filtered_words if word[index] == letter]
+    for (include_entries, included_letters) in zip((include_entries1, include_entries2, include_entries3, include_entries4, include_entries5, include_entries6), (included_letters1, included_letters2, included_letters3, included_letters4, included_letters5, included_letters6)):
+        for index, letter in enumerate(included_letters):
+            if include_entries[index].cget("bg") == yellow_letter_color:
+                if letter:  # If a certain letter is specified and is yellow
+                    count = 0
+                    if letter in yellow or letter in green:
+                        count = yellow.count(letter) + green.count(letter) - 1
+                    filtered_words = [word for word in filtered_words if letter in word and (word.count(letter) > count)]
+                    filtered_words = [word for word in filtered_words if not word[index] == letter]
+            if include_entries[index].cget("bg") == green_letter_color:
+                if letter:
+                    filtered_words = [word for word in filtered_words if word[index] == letter]
 
     current_list = filtered_words
     print_list()
@@ -142,19 +143,23 @@ def remove_focus(event):
     if not isinstance(event.widget, tk.Entry):
         root.focus_set()
 
-def create_letter_entry(parent, label_text):
+def create_letter_entry(parent):
     """Create a frame with a label and entry widgets for single letters."""
     frame = tk.Frame(parent)
-    label = tk.Label(frame, text=label_text, font=('Helvetica', 10, 'bold'))
-    label.pack(side=tk.TOP)
     entries = []
-    for _ in range(5):
+    for i in range(5):
         var = tk.StringVar()
         # Attach the trace method to the StringVar
-        var.trace_add('write', lambda name, index, mode, var=var: on_entry_change(var, index, mode))
-        var.trace_add('write', lambda name, index, mode, var=var: var.set(var.get().upper()))  # Convert text to uppercase
+        var.trace_add('write', lambda name, index, mode, var=var, i=i: on_entry_change(var, entries, i))
+        var.trace_add('write', lambda name, index, mode, var=var, i=i: var.set(var.get().upper()))  # Convert text to uppercase
         entry = tk.Entry(frame, width=2, font=('Helvetica', 24), textvariable=var, state=tk.DISABLED, justify=tk.CENTER)
-        entry.bind("<Button-1>", on_entry_click)  # Bind click event
+        entry.bind("<Button-1>", on_entry_click)  # Left mouse color change
+        entry.bind("<Up>", on_entry_click)  # Up arrow color change
+        entry.bind("<Down>", on_entry_click)  # Down arrow color change
+        entry.bind("<space>", on_entry_click)  # Space color change
+        entry.bind("<BackSpace>", lambda e, entries=entries, i=i: on_backspace(entries, i))  # Bind backspace event
+        entry.bind("<Left>", lambda e, entries=entries, i=i: on_left_arrow(entries, i))  # Left arrow
+        entry.bind("<Right>", lambda e, entries=entries, i=i: on_right_arrow(entries, i))  # Right arrow
         entry.pack(side=tk.LEFT, padx=2)
         entries.append(entry)
     frame.pack(pady=2)
@@ -167,36 +172,11 @@ def load_file():
     global words
     words = load_words(file_path)
     load_button.config(foreground='lightgreen')  # Change button color to green
-    for entry in include_entries1:
-        entry.config(state=tk.NORMAL)
-    for entry in include_entries2:
-        entry.config(state=tk.NORMAL)
-    for entry in include_entries3:
-        entry.config(state=tk.NORMAL)
-    for entry in include_entries4:
-        entry.config(state=tk.NORMAL)
-    for entry in include_entries5:
-        entry.config(state=tk.NORMAL)
-    for entry in include_entries6:
-        entry.config(state=tk.NORMAL)
+    for include_entries in (include_entries1, include_entries2, include_entries3, include_entries4, include_entries5, include_entries6):
+        for entry in include_entries:
+            entry.config(state=tk.NORMAL)
+    load_button.configure(text="File Loaded")
     update_list()
-
-
-def create_letter_entry_inc(parent):
-    """Create a frame with a label and entry widgets for single letters."""
-    frame = tk.Frame(parent)
-    entries = []
-    for _ in range(5):
-        var = tk.StringVar()
-        # Attach the trace method to the StringVar
-        var.trace_add('write', lambda name, index, mode, var=var: on_entry_change(var, index, mode))
-        var.trace_add('write', lambda name, index, mode, var=var: var.set(var.get().upper()))  # Convert text to uppercase
-        entry = tk.Entry(frame, width=2, font=('Helvetica', 24), textvariable=var, state=tk.DISABLED, justify=tk.CENTER)
-        entry.bind("<Button-1>", on_entry_click)  # Bind click event
-        entry.pack(side=tk.LEFT, padx=2)
-        entries.append(entry)
-    frame.pack(pady=2)
-    return entries
 
 def on_entry_click(event):
     """Change background color of the Entry widget."""
@@ -204,39 +184,26 @@ def on_entry_click(event):
     current_color = entry.cget("bg")
     text = entry.get()
     if text:  # Check if there is text in the Entry widget
-        if current_color == "#4d6160":
-            event.widget.config(bg="#e1b12c")
-    if current_color == "#e1b12c":
-        event.widget.config(bg="#10ac84")
-    elif current_color == "#10ac84":
-        event.widget.config(bg="#4d6160")
+        if current_color == background_color:
+            event.widget.config(bg=yellow_letter_color)
+    if current_color == yellow_letter_color:
+        event.widget.config(bg=green_letter_color)
+    elif current_color == green_letter_color:
+        event.widget.config(bg=background_color)
     update_list()
         
 
 def clear_entries():
     """Function to clear the contents of the entry widgets."""
-    for entry in include_entries1:
-        entry.delete(0, tk.END)
-        entry.config(bg="#4d6160")
-    for entry in include_entries2:
-        entry.delete(0, tk.END)
-        entry.config(bg="#4d6160")
-    for entry in include_entries3:
-        entry.delete(0, tk.END)
-        entry.config(bg="#4d6160")
-    for entry in include_entries4:
-        entry.delete(0, tk.END)
-        entry.config(bg="#4d6160")
-    for entry in include_entries5:
-        entry.delete(0, tk.END)
-        entry.config(bg="#4d6160")
-    for entry in include_entries6:
-        entry.delete(0, tk.END)
-        entry.config(bg="#4d6160")
+    for include_entries in (include_entries1, include_entries2, include_entries3, include_entries4, include_entries5, include_entries6):
+        for entry in include_entries:
+            entry.delete(0, tk.END)
+            entry.config(bg=background_color)
     for text in text_displays:
         text.config(state=tk.NORMAL)  # Temporarily enable widget to modify it
         text.delete('1.0', tk.END)
         text.config(state=tk.DISABLED)
+    update_list()
 
 words = []
 current_list = []
@@ -245,9 +212,9 @@ root = tk.Tk()
 root.title("Wordle Cheat")
 root.geometry("500x420")  # Width x Height
 root.resizable(False, False)
-root.config(bg='#4d6160')
-root.option_add('*Foreground', 'white')
-root.option_add('*Background', '#4d6160')
+root.config(bg=background_color)
+root.option_add('*Foreground', foreground_color)
+root.option_add('*Background', background_color)
 
 # Main frame for input controls
 input_frame = tk.Frame(root)
@@ -258,17 +225,19 @@ word_list_frame = tk.Frame(root)
 word_list_frame.pack(side=tk.RIGHT, padx=20, pady=20)
 
 # Create entries for include and exclude letters with labels
-include_entries1 = create_letter_entry(input_frame, "Enter your word")
-include_entries2 = create_letter_entry_inc(input_frame)
-include_entries3 = create_letter_entry_inc(input_frame)
-include_entries4 = create_letter_entry_inc(input_frame)
-include_entries5 = create_letter_entry_inc(input_frame)
-include_entries6 = create_letter_entry_inc(input_frame)
+label = tk.Label(input_frame, text="Enter your word", font=('Helvetica', 10, 'bold'))
+label.pack(side=tk.TOP)
+include_entries1 = create_letter_entry(input_frame)
+include_entries2 = create_letter_entry(input_frame)
+include_entries3 = create_letter_entry(input_frame)
+include_entries4 = create_letter_entry(input_frame)
+include_entries5 = create_letter_entry(input_frame)
+include_entries6 = create_letter_entry(input_frame)
 
 large_font = tkfont.Font(family="Helvetica", size=14, weight="bold")
 small_font = tkfont.Font(family="Helvetica", size=10, weight="bold")
 
-load_button = tk.Button(input_frame, text="Load Words File", command=load_file, font=large_font, width=20, height=2, relief="flat", foreground="white", background="#4d6160")
+load_button = tk.Button(input_frame, text="Load Words File", command=load_file, font=large_font, width=20, height=2, relief="flat", foreground=foreground_color, background=background_color)
 load_button.pack(pady=2)
 
 # Create frames for include and exclude entries
@@ -277,7 +246,7 @@ frame_include.pack(pady=5)
 frame_exclude = tk.Frame(root)
 frame_exclude.pack(pady=5)
 
-clear_button = tk.Button(input_frame, text="Clear", command=clear_entries, font=small_font, width=10, height=2, relief="flat", foreground="white", background="#4d6160")
+clear_button = tk.Button(input_frame, text="Clear", command=clear_entries, font=small_font, width=10, height=2, relief="flat", foreground=foreground_color, background=background_color)
 clear_button.pack(pady=5)
 
 # Assuming 'root' is your Tk window instance
@@ -285,7 +254,7 @@ text_displays = []  # List to store the text widgets
 for i in range(1, 11):
     frame = tk.Frame(word_list_frame)
     # Set label width sufficiently to accommodate "10." with some padding.
-    label = tk.Label(frame, text=f"{i}.", font=('Helvetica', 10, 'bold'), width=4, background="#4d6160")
+    label = tk.Label(frame, text=f"{i}.", font=('Helvetica', 10, 'bold'), width=4, background=background_color)
     label.pack(side=tk.LEFT)
     text = tk.Text(frame, width=8, height=1, font=('Helvetica', 14), state="disabled")
     text.pack(side=tk.LEFT, padx=5)
