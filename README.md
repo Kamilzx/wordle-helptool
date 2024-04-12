@@ -2,6 +2,10 @@
 
 Before you start, click on 'Load Words File' and upload the words-alpha.txt, which contains all of the english words.
 
+After loading, the text will appear green to let you know the file is in use and you can start playing
+
+You can't play unless the file is uploaded.
+
 ### Enter your words same as in the Wordle Game
 
 ## Double Click
