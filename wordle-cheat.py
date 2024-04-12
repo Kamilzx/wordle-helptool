@@ -23,54 +23,96 @@ def load_words(file_path):
 
 def get_letters_from_entries(entries):
     """Collect non-empty letters from entry widgets."""
-    return [entry.get().strip().lower() for entry in entries if entry.get().strip()]
+    return [entry.get().strip().lower() for entry in entries if entry.get().strip() and entry.cget("bg") == "#4d6160"]
 
 def on_entry_change(var, indx, mode):
     """Limit the entry widget to only one character."""
     current_value = var.get()
     if len(current_value) > 1:
         var.set(current_value[:1])
+    update_list()
+
 
 def update_list():
-    included_letters = [entry.get().strip().lower() for entry in include_entries]
+    global current_list
+
+    included_letters1 = [entry.get().strip().lower() for entry in include_entries1]
     included_letters2 = [entry.get().strip().lower() for entry in include_entries2]
     included_letters3 = [entry.get().strip().lower() for entry in include_entries3]
-    excluded_letters = set(get_letters_from_entries(exclude_entries))
-    certain_letters = [entry.get().strip().lower() for entry in certain_entries]
-    
+    included_letters4 = [entry.get().strip().lower() for entry in include_entries4]
+    included_letters5 = [entry.get().strip().lower() for entry in include_entries5]
+    included_letters6 = [entry.get().strip().lower() for entry in include_entries6]
+
+    excluded_letters1 = set(get_letters_from_entries(include_entries1))
+    excluded_letters2 = set(get_letters_from_entries(include_entries2))
+    excluded_letters3 = set(get_letters_from_entries(include_entries3))
+    excluded_letters4 = set(get_letters_from_entries(include_entries4))
+    excluded_letters5 = set(get_letters_from_entries(include_entries5))
+    excluded_letters6 = set(get_letters_from_entries(include_entries6))
+
     # Filter words based on excluded letters
-    filtered_words = [word for word in words if not any(letter in word for letter in excluded_letters)]
-    
-    # Filter words based on included letters (anywhere in the word)
-    if included_letters:
-        filtered_words = [word for word in filtered_words if all(letter in word for letter in included_letters)]
-        # Filter words based on included letters (specific positions)
-        for index, letter in enumerate(included_letters):
-            if letter:  # If a certain letter is specified
+    filtered_words = [word for word in words if not any(letter in word for letter in excluded_letters1)]
+    filtered_words = [word for word in filtered_words if not any(letter in word for letter in excluded_letters2)]
+    filtered_words = [word for word in filtered_words if not any(letter in word for letter in excluded_letters3)]
+    filtered_words = [word for word in filtered_words if not any(letter in word for letter in excluded_letters4)]
+    filtered_words = [word for word in filtered_words if not any(letter in word for letter in excluded_letters5)]
+    filtered_words = [word for word in filtered_words if not any(letter in word for letter in excluded_letters6)]
+
+    # Filter words based on included letters (specific positions)
+    for index, letter in enumerate(included_letters1):
+        if include_entries1[index].cget("bg") == "lightyellow":
+            if letter:  # If a certain letter is specified and is yellow
+                filtered_words = [word for word in filtered_words if letter in word]
                 filtered_words = [word for word in filtered_words if not word[index] == letter]
+        if include_entries1[index].cget("bg") == "lightgreen":
+            if letter:
+                filtered_words = [word for word in filtered_words if word[index] == letter]
 
-    # Filter words based on included letters (anywhere in the word)
-    if included_letters2:
-        filtered_words = [word for word in filtered_words if all(letter in word for letter in included_letters2)]
-        # Filter words based on included letters (specific positions)
-        for index, letter in enumerate(included_letters2):
-            if letter:  # If a certain letter is specified
+    for index, letter in enumerate(included_letters2):
+        if include_entries2[index].cget("bg") == "lightyellow":
+            if letter:  # If a certain letter is specified and is yellow
+                filtered_words = [word for word in filtered_words if letter in word]
                 filtered_words = [word for word in filtered_words if not word[index] == letter]
+        if include_entries2[index].cget("bg") == "lightgreen":
+            if letter:
+                filtered_words = [word for word in filtered_words if word[index] == letter]
 
-    # Filter words based on included letters (anywhere in the word)
-    if included_letters3:
-        filtered_words = [word for word in filtered_words if all(letter in word for letter in included_letters3)]
-        # Filter words based on included letters (specific positions)
-        for index, letter in enumerate(included_letters3):
-            if letter:  # If a certain letter is specified
+    for index, letter in enumerate(included_letters3):
+        if include_entries3[index].cget("bg") == "lightyellow":
+            if letter:  # If a certain letter is specified and is yellow
+                filtered_words = [word for word in filtered_words if letter in word]
                 filtered_words = [word for word in filtered_words if not word[index] == letter]
+        if include_entries3[index].cget("bg") == "lightgreen":
+            if letter:
+                filtered_words = [word for word in filtered_words if word[index] == letter]
 
-    # Filter words based on certain letters (specific positions)
-    for index, letter in enumerate(certain_letters):
-        if letter:  # If a certain letter is specified
-            filtered_words = [word for word in filtered_words if word[index] == letter]
+    for index, letter in enumerate(included_letters4):
+        if include_entries4[index].cget("bg") == "lightyellow":
+            if letter:  # If a certain letter is specified and is yellow
+                filtered_words = [word for word in filtered_words if letter in word]
+                filtered_words = [word for word in filtered_words if not word[index] == letter]
+        if include_entries4[index].cget("bg") == "lightgreen":
+            if letter:
+                filtered_words = [word for word in filtered_words if word[index] == letter]
 
-    global current_list
+    for index, letter in enumerate(included_letters5):
+        if include_entries5[index].cget("bg") == "lightyellow":
+            if letter:  # If a certain letter is specified and is yellow
+                filtered_words = [word for word in filtered_words if letter in word]
+                filtered_words = [word for word in filtered_words if not word[index] == letter]
+        if include_entries5[index].cget("bg") == "lightgreen":
+            if letter:
+                filtered_words = [word for word in filtered_words if word[index] == letter]
+
+    for index, letter in enumerate(included_letters6):
+        if include_entries6[index].cget("bg") == "lightyellow":
+            if letter:  # If a certain letter is specified and is yellow
+                filtered_words = [word for word in filtered_words if letter in word]
+                filtered_words = [word for word in filtered_words if not word[index] == letter]
+        if include_entries6[index].cget("bg") == "lightgreen":
+            if letter:
+                filtered_words = [word for word in filtered_words if word[index] == letter]
+
     current_list = filtered_words
     print_list()
 
@@ -84,8 +126,7 @@ def find_top_words_by_popular_letters(words, max_words=10):
 
 def print_list():
     if not current_list:
-        messagebox.showinfo("Info", "The list is empty. Apply filters first.")
-        return
+        print("The list is empty. Apply filters first.")
     top_words = find_top_words_by_popular_letters(current_list.copy(), max_words=10)
     # Clear previous content in all text widgets
     for text in text_displays:
@@ -96,14 +137,10 @@ def print_list():
         text_displays[i].insert(tk.END, word.upper())
         text_displays[i].config(state=tk.DISABLED)  # Disable widget to prevent user input
 
-def load_file():
-    file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
-    if not file_path:
-        return
-    global words
-    words = load_words(file_path)
-    load_button.config(foreground='lightgreen')  # Change button color to green
-    
+def remove_focus(event):
+    """Remove focus from Entry widgets."""
+    if not isinstance(event.widget, tk.Entry):
+        root.focus_set()
 
 def create_letter_entry(parent, label_text):
     """Create a frame with a label and entry widgets for single letters."""
@@ -115,66 +152,101 @@ def create_letter_entry(parent, label_text):
         var = tk.StringVar()
         # Attach the trace method to the StringVar
         var.trace_add('write', lambda name, index, mode, var=var: on_entry_change(var, index, mode))
-        entry = tk.Entry(frame, width=2, font=('Helvetica', 14), textvariable=var)
+        var.trace_add('write', lambda name, index, mode, var=var: var.set(var.get().upper()))  # Convert text to uppercase
+        entry = tk.Entry(frame, width=2, font=('Helvetica', 24), textvariable=var, state=tk.DISABLED, justify=tk.CENTER)
+        entry.bind("<Button-1>", on_entry_click)  # Bind click event
         entry.pack(side=tk.LEFT, padx=2)
         entries.append(entry)
     frame.pack(pady=2)
     return entries
 
+def load_file():
+    file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
+    if not file_path:
+        return
+    global words
+    words = load_words(file_path)
+    load_button.config(foreground='lightgreen')  # Change button color to green
+    for entry in include_entries1:
+        entry.config(state=tk.NORMAL)
+    for entry in include_entries2:
+        entry.config(state=tk.NORMAL)
+    for entry in include_entries3:
+        entry.config(state=tk.NORMAL)
+    for entry in include_entries4:
+        entry.config(state=tk.NORMAL)
+    for entry in include_entries5:
+        entry.config(state=tk.NORMAL)
+    for entry in include_entries6:
+        entry.config(state=tk.NORMAL)
+    update_list()
+
+
 def create_letter_entry_inc(parent):
     """Create a frame with a label and entry widgets for single letters."""
     frame = tk.Frame(parent)
-    #label = tk.Label(frame, font=('Helvetica', 10, 'bold'))
-    #label.pack(side=tk.TOP)
     entries = []
     for _ in range(5):
         var = tk.StringVar()
         # Attach the trace method to the StringVar
         var.trace_add('write', lambda name, index, mode, var=var: on_entry_change(var, index, mode))
-        entry = tk.Entry(frame, width=2, font=('Helvetica', 14), textvariable=var)
+        var.trace_add('write', lambda name, index, mode, var=var: var.set(var.get().upper()))  # Convert text to uppercase
+        entry = tk.Entry(frame, width=2, font=('Helvetica', 24), textvariable=var, state=tk.DISABLED, justify=tk.CENTER)
+        entry.bind("<Button-1>", on_entry_click)  # Bind click event
         entry.pack(side=tk.LEFT, padx=2)
         entries.append(entry)
     frame.pack(pady=2)
     return entries
 
-def create_letter_entry_exc(parent, label_text):
-    """Create a frame with a label and entry widgets for single letters."""
-    frame = tk.Frame(parent)
-    label = tk.Label(frame, text=label_text, font=('Helvetica', 10, 'bold'))
-    label.pack(side=tk.TOP)
-    entries = []
-    for _ in range(8):
-        var = tk.StringVar()
-        # Attach the trace method to the StringVar
-        var.trace_add('write', lambda name, index, mode, var=var: on_entry_change(var, index, mode))
-        entry = tk.Entry(frame, width=2, font=('Helvetica', 14), textvariable=var)
-        entry.pack(side=tk.LEFT, padx=2)
-        entries.append(entry)
-    frame.pack(pady=4)
-    return entries
+def on_entry_click(event):
+    """Change background color of the Entry widget."""
+    entry = event.widget
+    current_color = entry.cget("bg")
+    text = entry.get()
+    if text:  # Check if there is text in the Entry widget
+        if current_color == "#4d6160":
+            event.widget.config(bg="lightyellow")
+            event.widget.config(fg="black")
+    if current_color == "lightyellow":
+        event.widget.config(bg="lightgreen")
+        event.widget.config(fg="black")
+    elif current_color == "lightgreen":
+        event.widget.config(bg="#4d6160")
+        event.widget.config(fg="white")
+    update_list()
+        
 
 def clear_entries():
     """Function to clear the contents of the entry widgets."""
-    for entry in certain_entries:
+    for entry in include_entries1:
         entry.delete(0, tk.END)
-    for entry in include_entries:
-        entry.delete(0, tk.END)
+        entry.config(bg="#4d6160")
     for entry in include_entries2:
         entry.delete(0, tk.END)
+        entry.config(bg="#4d6160")
     for entry in include_entries3:
         entry.delete(0, tk.END)
-    for entry in exclude_entries:
+        entry.config(bg="#4d6160")
+    for entry in include_entries4:
         entry.delete(0, tk.END)
+        entry.config(bg="#4d6160")
+    for entry in include_entries5:
+        entry.delete(0, tk.END)
+        entry.config(bg="#4d6160")
+    for entry in include_entries6:
+        entry.delete(0, tk.END)
+        entry.config(bg="#4d6160")
     for text in text_displays:
         text.config(state=tk.NORMAL)  # Temporarily enable widget to modify it
         text.delete('1.0', tk.END)
+        text.config(state=tk.DISABLED)
 
 words = []
 current_list = []
 
 root = tk.Tk()
 root.title("Wordle Cheat")
-root.geometry("500x470")  # Width x Height
+root.geometry("500x420")  # Width x Height
 root.resizable(False, False)
 root.config(bg='#4d6160')
 root.option_add('*Foreground', 'white')
@@ -188,15 +260,13 @@ input_frame.pack(side=tk.LEFT, padx=20, pady=20)
 word_list_frame = tk.Frame(root)
 word_list_frame.pack(side=tk.RIGHT, padx=20, pady=20)
 
-# Create entries for certain letters with a label
-# Creating entries for "Certain Letters" as an example
-certain_entries = create_letter_entry(input_frame, "Certain Letters")
-
 # Create entries for include and exclude letters with labels
-include_entries = create_letter_entry(input_frame, "Letters to Include")
+include_entries1 = create_letter_entry(input_frame, "Enter your word")
 include_entries2 = create_letter_entry_inc(input_frame)
 include_entries3 = create_letter_entry_inc(input_frame)
-exclude_entries = create_letter_entry_exc(input_frame, "Letters to Exclude")
+include_entries4 = create_letter_entry_inc(input_frame)
+include_entries5 = create_letter_entry_inc(input_frame)
+include_entries6 = create_letter_entry_inc(input_frame)
 
 large_font = tkfont.Font(family="Helvetica", size=14, weight="bold")
 small_font = tkfont.Font(family="Helvetica", size=10, weight="bold")
@@ -209,9 +279,6 @@ frame_include = tk.Frame(root)
 frame_include.pack(pady=5)
 frame_exclude = tk.Frame(root)
 frame_exclude.pack(pady=5)
-
-filter_button = tk.Button(input_frame, text="Apply Filters", command=update_list, font=large_font, width=20, height=2, relief="flat", foreground="white", background="#4d6160")
-filter_button.pack(pady=2)
 
 clear_button = tk.Button(input_frame, text="Clear", command=clear_entries, font=small_font, width=10, height=2, relief="flat", foreground="white", background="#4d6160")
 clear_button.pack(pady=5)
@@ -228,7 +295,8 @@ for i in range(1, 11):
     frame.pack(pady=4)
     text_displays.append(text)
 
-
+# Bind click event to remove focus from Entry widgets
+root.bind("<Button-1>", remove_focus)
 
 root.mainloop()
 
