@@ -47,9 +47,10 @@ def on_entry_change(var, entries, index):
             entries[index + 1].focus()
     update_list()
 
-def on_backspace(entries, index):
+def on_backspace(var, entries, index):
     """Handle the backspace key event to shift focus to the previous entry if current is empty."""
-    if index > 0:  # Check if current entry is empty
+    current_value = var.get()
+    if index > 0 and current_value == "":  # Check if current entry is empty
         entries[index - 1].focus()  # Focus the previous entry
         entries[index - 1].config(state=tk.NORMAL)
     update_list()
@@ -66,8 +67,7 @@ def on_right_arrow(entries, index):
 
 def update_list():
     global current_list
-    yellow = ["","","","",""]
-    green = ["","","","",""]
+    green_yellow1, green_yellow2, green_yellow3, green_yellow4, green_yellow5, green_yellow6 = [], [], [], [], [], []
     filtered_words = []
     true_excluded = []
 
@@ -86,29 +86,28 @@ def update_list():
     excluded_letters6 = set(get_letters_from_entries(include_entries6))
 
     # Get all Green and Yellow letters
-    for (include_entries, included_letters) in zip((include_entries1, include_entries2, include_entries3, include_entries4, include_entries5, include_entries6), (included_letters1, included_letters2, included_letters3, included_letters4, included_letters5, included_letters6)):
+    for (include_entries, included_letters, green_yellow) in zip((include_entries1, include_entries2, include_entries3, include_entries4, include_entries5, include_entries6),
+                                                   (included_letters1, included_letters2, included_letters3, included_letters4, included_letters5, included_letters6),
+                                                   (green_yellow1, green_yellow2, green_yellow3, green_yellow4, green_yellow5, green_yellow6)):
         for index, letter in enumerate(included_letters):
-            if include_entries[index].cget("bg") == green_letter_color:
-                green[index] = letter
-            if include_entries[index].cget("bg") == yellow_letter_color:
-                yellow[index] = letter
+            if include_entries[index].cget("bg") == green_letter_color or include_entries[index].cget("bg") == yellow_letter_color:
+                green_yellow.append(letter)
 
     # Filter words based on excluded letters
     for excluded_letters in (excluded_letters1, excluded_letters2, excluded_letters3, excluded_letters4, excluded_letters5, excluded_letters6):
         for letter in excluded_letters:
-            if letter not in green and letter not in yellow:
+            if letter not in green_yellow1 and letter not in green_yellow2 and letter not in green_yellow3 and letter not in green_yellow4 and letter not in green_yellow5 and letter not in green_yellow6:
                 true_excluded.append(letter)
     filtered_words = [word for word in words if not any(letter in word for letter in true_excluded)]
 
     # Filter words based on included letters (specific positions)
-    for (include_entries, included_letters) in zip((include_entries1, include_entries2, include_entries3, include_entries4, include_entries5, include_entries6), (included_letters1, included_letters2, included_letters3, included_letters4, included_letters5, included_letters6)):
+    for (include_entries, included_letters) in zip((include_entries1, include_entries2, include_entries3, include_entries4, include_entries5, include_entries6),
+                                                   (included_letters1, included_letters2, included_letters3, included_letters4, included_letters5, included_letters6)):
         for index, letter in enumerate(included_letters):
             if include_entries[index].cget("bg") == yellow_letter_color:
                 if letter:  # If a certain letter is specified and is yellow
-                    count = 0
-                    if letter in yellow or letter in green:
-                        count = yellow.count(letter) + green.count(letter) - 1
-                    filtered_words = [word for word in filtered_words if letter in word and (word.count(letter) > count)]
+                    count = max(green_yellow1.count(letter), green_yellow2.count(letter), green_yellow3.count(letter), green_yellow4.count(letter), green_yellow5.count(letter), green_yellow6.count(letter))
+                    filtered_words = [word for word in filtered_words if letter in word and (word.count(letter) >= count)]
                     filtered_words = [word for word in filtered_words if not word[index] == letter]
             if include_entries[index].cget("bg") == green_letter_color:
                 if letter:
@@ -157,7 +156,7 @@ def create_letter_entry(parent):
         entry.bind("<Up>", on_entry_click)  # Up arrow color change
         entry.bind("<Down>", on_entry_click)  # Down arrow color change
         entry.bind("<space>", on_entry_click)  # Space color change
-        entry.bind("<BackSpace>", lambda e, entries=entries, i=i: on_backspace(entries, i))  # Bind backspace event
+        entry.bind("<BackSpace>", lambda e, entries=entries, i=i, var=var: on_backspace(var, entries, i))  # Bind backspace event
         entry.bind("<Left>", lambda e, entries=entries, i=i: on_left_arrow(entries, i))  # Left arrow
         entry.bind("<Right>", lambda e, entries=entries, i=i: on_right_arrow(entries, i))  # Right arrow
         entry.pack(side=tk.LEFT, padx=2)
