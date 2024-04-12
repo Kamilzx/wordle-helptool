@@ -1,6 +1,6 @@
 # Wordle Help Tool
 
-Before you start, click on 'Load Words File' and upload the words-alpha.txt, which contains all of the possible wordle words.
+Before you start, click on 'Load Words File' and upload the valid-wordle-words.txt, which contains all of the possible wordle words.
 
 After loading, the text will appear green to let you know the file is in use and you can start playing
 
