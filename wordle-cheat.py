@@ -60,56 +60,56 @@ def update_list():
 
     # Filter words based on included letters (specific positions)
     for index, letter in enumerate(included_letters1):
-        if include_entries1[index].cget("bg") == "lightyellow":
+        if include_entries1[index].cget("bg") == "#e1b12c":
             if letter:  # If a certain letter is specified and is yellow
                 filtered_words = [word for word in filtered_words if letter in word]
                 filtered_words = [word for word in filtered_words if not word[index] == letter]
-        if include_entries1[index].cget("bg") == "lightgreen":
+        if include_entries1[index].cget("bg") == "#10ac84":
             if letter:
                 filtered_words = [word for word in filtered_words if word[index] == letter]
 
     for index, letter in enumerate(included_letters2):
-        if include_entries2[index].cget("bg") == "lightyellow":
+        if include_entries2[index].cget("bg") == "#e1b12c":
             if letter:  # If a certain letter is specified and is yellow
                 filtered_words = [word for word in filtered_words if letter in word]
                 filtered_words = [word for word in filtered_words if not word[index] == letter]
-        if include_entries2[index].cget("bg") == "lightgreen":
+        if include_entries2[index].cget("bg") == "#10ac84":
             if letter:
                 filtered_words = [word for word in filtered_words if word[index] == letter]
 
     for index, letter in enumerate(included_letters3):
-        if include_entries3[index].cget("bg") == "lightyellow":
+        if include_entries3[index].cget("bg") == "#e1b12c":
             if letter:  # If a certain letter is specified and is yellow
                 filtered_words = [word for word in filtered_words if letter in word]
                 filtered_words = [word for word in filtered_words if not word[index] == letter]
-        if include_entries3[index].cget("bg") == "lightgreen":
+        if include_entries3[index].cget("bg") == "#10ac84":
             if letter:
                 filtered_words = [word for word in filtered_words if word[index] == letter]
 
     for index, letter in enumerate(included_letters4):
-        if include_entries4[index].cget("bg") == "lightyellow":
+        if include_entries4[index].cget("bg") == "#e1b12c":
             if letter:  # If a certain letter is specified and is yellow
                 filtered_words = [word for word in filtered_words if letter in word]
                 filtered_words = [word for word in filtered_words if not word[index] == letter]
-        if include_entries4[index].cget("bg") == "lightgreen":
+        if include_entries4[index].cget("bg") == "#10ac84":
             if letter:
                 filtered_words = [word for word in filtered_words if word[index] == letter]
 
     for index, letter in enumerate(included_letters5):
-        if include_entries5[index].cget("bg") == "lightyellow":
+        if include_entries5[index].cget("bg") == "#e1b12c":
             if letter:  # If a certain letter is specified and is yellow
                 filtered_words = [word for word in filtered_words if letter in word]
                 filtered_words = [word for word in filtered_words if not word[index] == letter]
-        if include_entries5[index].cget("bg") == "lightgreen":
+        if include_entries5[index].cget("bg") == "#10ac84":
             if letter:
                 filtered_words = [word for word in filtered_words if word[index] == letter]
 
     for index, letter in enumerate(included_letters6):
-        if include_entries6[index].cget("bg") == "lightyellow":
+        if include_entries6[index].cget("bg") == "#e1b12c":
             if letter:  # If a certain letter is specified and is yellow
                 filtered_words = [word for word in filtered_words if letter in word]
                 filtered_words = [word for word in filtered_words if not word[index] == letter]
-        if include_entries6[index].cget("bg") == "lightgreen":
+        if include_entries6[index].cget("bg") == "#10ac84":
             if letter:
                 filtered_words = [word for word in filtered_words if word[index] == letter]
 
@@ -205,14 +205,11 @@ def on_entry_click(event):
     text = entry.get()
     if text:  # Check if there is text in the Entry widget
         if current_color == "#4d6160":
-            event.widget.config(bg="lightyellow")
-            event.widget.config(fg="black")
-    if current_color == "lightyellow":
-        event.widget.config(bg="lightgreen")
-        event.widget.config(fg="black")
-    elif current_color == "lightgreen":
+            event.widget.config(bg="#e1b12c")
+    if current_color == "#e1b12c":
+        event.widget.config(bg="#10ac84")
+    elif current_color == "#10ac84":
         event.widget.config(bg="#4d6160")
-        event.widget.config(fg="white")
     update_list()
         
 
